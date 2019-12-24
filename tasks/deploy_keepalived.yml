@@ -24,7 +24,7 @@
   lineinfile:
     path: /etc/sysconfig/keepalived
     regexp: "^KEEPALIVED_OPTIONS="
-    line: KEEPALIVED_OPTIONS=\"-D -S 0\"
+    line: 'KEEPALIVED_OPTIONS="-D -S 0"'
 
 - name: Config rsyslog file for the log of keepalived
   lineinfile:
@@ -34,7 +34,7 @@
     state: present
   with_items:
     - "# Save keepalived.log"
-    - local0.*\   \"{{ log_dir }}"/keepalived.log
+    - "local0.*       {{ log_dir }}/keepalived.log"
   notify: restart rsyslog
 
 - name: Copy script file
@@ -44,7 +44,7 @@
     owner: root
     group: root
     mode: 0744
-   with_items:
+  with_items:
     - { src: 'check_haproxy.sh', dest: '/etc/keepalived' }
     - { src: 'check_proxysql.sh', dest: '/etc/keepalived' }
   run_once: True
@@ -60,6 +60,10 @@
     - { src: 'keepalived.j2', dest: '/etc/logrotate.d/keepalived' }
     - { src: 'notify_action.sh.j2', dest: '/etc/keepalived/notify_action.sh' }
 
+- name: Register the unicast_peer for keepalived parameter file
+  shell: cat /etc/hosts | grep {{ haproxy_or_proxysql }} | grep -v "{{ ansible_default_ipv4.address }}" | awk '{printf $1}'
+  register: unicast_peer
+
 - name: Rendering keepalived parameter file
   template:
     src: keepalived.conf.j2
@@ -67,17 +71,15 @@
     owner: root
     group: root
     mode: 0644
-
-- name: Register the unicast_peer for keepalived parameter file
-  shell: cat /etc/hosts | grep {{ haproxy_or_proxysql }} | grep -v "{{ ansible_default_ipv4.address }}" | awk '{printf $1}'
-  register: unicast_peer
-
-- name: Config the unicast_peer for keepalived parameter file
-  lineinfile:
-    path: /etc/keepalived/keepalived.conf
-    regexp: "^unicast_peer_ip"
-    line: {{ unicast_peer.stdout }}
   notify: restart keepalived
+
+#- name: Config the unicast_peer for keepalived parameter file
+#  lineinfile:
+#    path: /etc/keepalived/keepalived.conf
+#    regexp: '^unicast_peer {'
+#    line: "{{ unicast_peer.stdout }}"
+#    insertafter: '^unicast_peer {' 
+#  notify: restart keepalived
 
 - name: Add log polling task schedule for keepalived
   cron:

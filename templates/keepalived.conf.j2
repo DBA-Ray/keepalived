@@ -20,6 +20,9 @@ vrrp_script {{ key }}
 {
     script "{{ value }}"
     interval 5
+    fall 3
+    rise 1
+    user root
 }
 {% endfor %}
 {% endif %}
@@ -40,7 +43,7 @@ state BACKUP           #备
     }
     unicast_src_ip {{ ansible_default_ipv4.address }}   #本机内网 IP
     unicast_peer {
-        unicast_peer_ip           #对端设备的 IP 地址，例如：10.0.0.1
+        {{ unicast_peer.stdout }}      #对端设备的 IP 地址，例如：10.0.0.1
     }
     virtual_ipaddress {
         {{ vip }}          #内网 VIP
