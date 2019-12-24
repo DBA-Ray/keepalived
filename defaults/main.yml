@@ -1,2 +1,7 @@
 ---
 # defaults file for keepalived
+vrrp_script: { key: check_proxysql, value: "/etc/keepalived/check_proxysql.sh" }
+vrrp_instance: VI_1
+virtual_router_id: 7
+log_dir: /var/local/log
+haproxy_or_proxysql: proxysql

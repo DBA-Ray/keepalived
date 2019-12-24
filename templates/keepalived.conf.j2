@@ -1,0 +1,65 @@
+! Configuration File for keepalived
+global_defs {
+   script_user root
+   enable_script_security
+   notification_email {
+     root@localhost
+   }
+   notification_email_from Alexandre.Cassen@firewall.loc
+   smtp_server 127.0.0.1
+   smtp_connect_timeout 30
+   router_id LVS_DEVEL
+   vrrp_skip_check_adv_addr
+   vrrp_garp_interval 0
+   vrrp_gna_interval 0
+}
+
+{% if vrrp_script is defined %}
+{% for key, value in vrrp_script.items() %}
+vrrp_script {{ key }}
+{
+    script "{{ value }}"
+    interval 5
+}
+{% endfor %}
+{% endif %}
+
+vrrp_instance {{ vrrp_instance }} {
+    #注意主备参数选择
+    #state MASTER            #主   #修改点, 主机为 MASTER，备机为 BACKUP
+state BACKUP           #备
+    interface {{ ansible_default_ipv4.interface }}          #改成本机网卡名 例如 eth0
+    virtual_router_id {{ virtual_router_id }}
+    nopreempt                   #非抢占模式
+#    preempt_delay 10
+    priority 30             #主高于备, 例如 主 50，备 30
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass {{ keepalived_password }}
+    }
+    unicast_src_ip {{ ansible_default_ipv4.address }}   #本机内网 IP
+    unicast_peer {
+        unicast_peer_ip           #对端设备的 IP 地址，例如：10.0.0.1
+    }
+    virtual_ipaddress {
+        {{ vip }}          #内网 VIP
+    }
+    notify_master "/etc/keepalived/notify_action.sh MASTER"
+    notify_backup "/etc/keepalived/notify_action.sh BACKUP"
+    notify_fault "/etc/keepalived/notify_action.sh FAULT"
+    notify_stop "/etc/keepalived/notify_action.sh STOP"
+    garp_master_delay 1
+    garp_master_refresh 5
+
+        track_interface {
+                {{ ansible_default_ipv4.interface }}                #改成本机网卡名 例如 eth0
+        }
+{% if vrrp_script is defined %}
+{% for key, value in vrrp_script.items() %}
+    track_script {
+        {{ key }}
+    }
+{% endfor %}
+{% endif %}
+}

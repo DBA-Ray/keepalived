@@ -1,2 +1,17 @@
 ---
 # vars file for keepalived
+# 基础软件包
+packages:
+  - vim
+  - lrzsz
+  - telnet
+  - net-tools
+  - tree
+  - unzip
+  - libaio
+  - numactl
+  - expect
+  - ipvsadm
+
+vars_files:
+  - secrets.yml
