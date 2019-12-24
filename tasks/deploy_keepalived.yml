@@ -73,14 +73,6 @@
     mode: 0644
   notify: restart keepalived
 
-#- name: Config the unicast_peer for keepalived parameter file
-#  lineinfile:
-#    path: /etc/keepalived/keepalived.conf
-#    regexp: '^unicast_peer {'
-#    line: "{{ unicast_peer.stdout }}"
-#    insertafter: '^unicast_peer {' 
-#  notify: restart keepalived
-
 - name: Add log polling task schedule for keepalived
   cron:
     name: "logrotate"
