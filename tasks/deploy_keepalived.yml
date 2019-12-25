@@ -26,7 +26,7 @@
     regexp: "^KEEPALIVED_OPTIONS="
     line: 'KEEPALIVED_OPTIONS="-D -S 0"'
 
-- name: Config rsyslog file for the log of keepalived
+- name: Add monitor log file path for the log of keepalived
   lineinfile:
     path: /etc/rsyslog.conf
     line: "{{ item }}"
