@@ -34,7 +34,7 @@
     state: present
   with_items:
     - "# Save keepalived.log"
-    - "local0.*       {{ log_dir }}/keepalived.log"
+    - "{{ log_channel }}.*       {{ log_dir }}/keepalived.log"
   notify: restart rsyslog
 
 - name: Copy script file

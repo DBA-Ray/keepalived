@@ -14,18 +14,14 @@ global_defs {
    vrrp_gna_interval 0
 }
 
-{% if vrrp_script is defined %}
-{% for key, value in vrrp_script.items() %}
-vrrp_script {{ key }}
+vrrp_script {{ vrrp_script }}
 {
-    script "{{ value }}"
+    script "{{ vrrp_script_path }}"
     interval 5
     fall 3
     rise 1
     user root
 }
-{% endfor %}
-{% endif %}
 
 vrrp_instance {{ vrrp_instance }} {
     #注意主备参数选择
@@ -58,11 +54,9 @@ state BACKUP           #备
         track_interface {
                 {{ ansible_default_ipv4.interface }}                #改成本机网卡名 例如 eth0
         }
-{% if vrrp_script is defined %}
-{% for key, value in vrrp_script.items() %}
+
     track_script {
-        {{ key }}
+        {{ vrrp_script }}
     }
-{% endfor %}
-{% endif %}
+
 }
