@@ -61,7 +61,7 @@
     - { src: 'notify_action.sh.j2', dest: '/etc/keepalived/notify_action.sh' }
 
 - name: Register the unicast_peer for keepalived parameter file
-  command: "cat /etc/hosts | grep {{ haproxy_or_proxysql }} | grep -v {{ ansible_default_ipv4.address }} | awk '{printf $1}'"
+  shell: "cat /etc/hosts | grep {{ proxysql_or_haproxy }} | grep -v {{ ansible_default_ipv4.address }} | awk '{printf $1}'"
   register: unicast_peer
 
 - name: Rendering keepalived parameter file

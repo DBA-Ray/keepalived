@@ -1,9 +1,11 @@
 ---
 # defaults file for keepalived
-haproxy_or_proxysql: proxysql
-vrrp_script: "check_{{ haproxy_or_proxysql }}"
+proxysql_or_haproxy: proxysql
+vrrp_script: "check_{{ proxysql_or_haproxy }}"
 vrrp_script_path: "/etc/keepalived/{{ proxysql_or_haproxy }}.sh"
-vip: 10.0.64.57
+vip: 172.17.16.57
 vrrp_instance: VI_1
 virtual_router_id: 7
+log_channel: local0
+log: "127.0.0.1  {{ log_channel }}"
 log_dir: /var/local/log
