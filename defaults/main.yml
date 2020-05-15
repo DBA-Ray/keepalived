@@ -2,7 +2,7 @@
 # defaults file for keepalived
 proxysql_or_haproxy: proxysql
 vrrp_script: "check_{{ proxysql_or_haproxy }}"
-vrrp_script_path: "/etc/keepalived/{{ proxysql_or_haproxy }}.sh"
+vrrp_script_path: "/etc/keepalived/{{ vrrp_script }}.sh"
 vip: 172.17.16.57
 vrrp_instance: VI_1
 virtual_router_id: 7
