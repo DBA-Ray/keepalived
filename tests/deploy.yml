@@ -1,5 +1,5 @@
 ---
-- hosts: proxysql_pro1
+- hosts: "proxysql_{{ env }}"
   gather_facts: True
   remote_user: root
   roles:

@@ -75,7 +75,7 @@
 
 - name: Add log polling task schedule for keepalived
   cron:
-    name: "logrotate"
+    name: "keepalive logrotate"
     minute: "50"
     hour: "23"
     job: "/usr/sbin/logrotate -vf -s /var/lib/logrotate/logrotate.status /etc/logrotate.d/keepalived > /dev/null"

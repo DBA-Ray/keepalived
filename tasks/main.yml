@@ -2,6 +2,4 @@
 # tasks file for keepalived
 - include: password.yml
 
-- include: system_check.yml
-
 - include: deploy_keepalived.yml
