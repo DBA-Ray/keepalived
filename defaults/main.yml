@@ -9,4 +9,4 @@ vrrp_instance: VI_1
 virtual_router_id: 7
 log_channel: local0
 log: "127.0.0.1  {{ log_channel }}"
-log_dir: /var/local/log
+log_dir: /data/keepalived/log
